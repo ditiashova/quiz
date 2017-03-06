@@ -5,9 +5,9 @@
 
 
 
-const variants = document.querySelectorAll('.variant');
-const inputs = document.querySelectorAll('.radinput');
-const lines = document.querySelectorAll('.check');
+
+
+
 
 const colors = ['limegreen', 'crimson', 'cyan', 'darkviolet', 'goldenrod'];
 const indexesOfReceivedForAll = [];
@@ -24,6 +24,10 @@ let allQuestions = [];
 let curQuestion = 0;
 let totalResult = 0;
 let numbers = [];
+let variants = [];
+let inputs = [];
+let lines = [];
+
 
 loadData();
 
@@ -70,11 +74,23 @@ function addButtons() {
     }
     numbers = document.querySelectorAll('.questionNumber');
 }
+
+function addOptions() {
+
+    for (let i = 0; i < allQuestions[curQuestion].choices.length; i++) {
+        document.getElementById('variants').innerHTML += '<div class="check"><div class="circle"><input type="checkbox" name="var" class="radinput" id="choice1"></div><div class="line"><label for="choice1" class="variant">' + allQuestions[curQuestion].choices[i] + '</label></div></div>';
+        variants.push(allQuestions[curQuestion].choices[i]);
+        lines = document.querySelectorAll('.check');
+    }
+}
+
+
 function initializeData() {
     addButtons();
     displayQuestion();
-    displayVariants();
+    /*displayVariants();*/
     displayColor();
+    addOptions();
 
     DomHelper.setElementText('totalQuestions', allQuestions.length);
     DomHelper.hideFromDom(document.getElementById('return'));
@@ -110,7 +126,7 @@ function returnClick() {
 
 function displayVariants() {
     for (let j = 0; j < variants.length; j++) {
-        variants[j].innerHTML = allQuestions[curQuestion].choices[j];
+        variants[j] = allQuestions[curQuestion].choices[j];
     }
 }
 
@@ -152,6 +168,7 @@ function changeCard () {
 }
 
 function saveAnswers () {
+    inputs = document.querySelectorAll('.radinput');
   let indexesOfReceivedForSingleQuestion = [];
   for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].checked) {
@@ -163,7 +180,7 @@ function saveAnswers () {
 }
 
 function hideQuestion() {
-    variants.forEach(DomHelper.hideFromDom);
+    document.querySelectorAll('.variants').forEach(DomHelper.hideFromDom);
     inputs.forEach(DomHelper.hideFromDom);
     DomHelper.hideFromDom(document.getElementById('questionNumeration'));
     DomHelper.hideFromDom(document.getElementById('button'));
@@ -218,3 +235,55 @@ function showChecked() {
         }
     }
 }*/
+
+/**
+ * Created by INNA on 06.03.2017.
+ */
+
+/*admin settings*/
+const newQuestions = document.querySelectorAll(".newQuestion");
+const addQuestionButton = document.getElementById('addQuestionButton');
+const addOptionButton = document.getElementById('addOptionButton');
+const saveChangesButton = document.getElementById('saveChangesButton');
+newQuestions.forEach(key => key.addEventListener('click', showSettings))
+addQuestionButton.addEventListener('click', addOneQuestion);
+addOptionButton.addEventListener('click', addOneOption);
+saveChangesButton.addEventListener('click', saveChanges);
+
+function initializeQuestions() {
+}
+
+let questionCounter = 0;
+function addOneQuestion() {
+    document.getElementById('tableOfQuestions').innerHTML += '<tr class="newQuestion">' + '<td>' + (questionCounter+1) + '</td>' + '<td>' + 'Tap to edit' + '</td>' +         '<td>' + '<img src="http://www.iconsdb.com/icons/download/red/minus-4-512.gif" alt="minus sign" height="20px" width="20px" class="sign">' + '</td>' + '</tr>';
+    document.querySelector(".newQuestion").addEventListener('click', showSettings);
+    questionCounter++;
+}
+
+function showSettings() {
+    document.getElementById('settingsForQuestions').style.visibility = 'visible';
+}
+function addOneOption() {
+    document.getElementById('tableOfOptions').innerHTML += '<tr class="newOption">' +         '<td>' + '</td>' + '<td><input type="text" name="questionVariant" value="option1" class="adminOptionsInput"></td>  <td><input type="checkbox" class="checkbox"></td><td><img src="http://www.iconsdb.com/icons/download/red/minus-4-512.gif" alt="minus sign" height="20px" width="20px" class="sign"></td></tr>';
+}
+function saveChanges() {
+    let addingQuestion = document.getElementById('adminQuestionInput').value;
+    let addingOptions = document.querySelectorAll('.adminOptionsInput');
+    let options = [];
+    let allAns = document.querySelectorAll('.checkbox');
+    let corAns = [];
+    for (let i = 0; i < addingOptions.length; i++) {
+        options.push(addingOptions[i].value);
+        if (allAns[i].checked) {
+            corAns.push(i);
+        }
+    }
+    let q = {
+        question: addingQuestion,
+        choices: options,
+        correctAnswer: corAns
+    };
+
+    allQuestions.push(q);
+    document.getElementById('settingsForQuestions').style.visibility = 'hidden';
+}

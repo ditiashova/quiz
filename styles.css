@@ -102,11 +102,3 @@ body {
 }
 
 
-/*admin CSS*/
-.container-admin {
-    display: flex;
-
-}
-.adminEdit {
-    flex: 1;
-}
