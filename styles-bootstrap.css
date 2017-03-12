@@ -1,0 +1,37 @@
+/* Some CSS Setup - nothing to do with flexbox */
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: auto;
+    font-family: Calibri;
+}
+.container {
+  display: block;
+  margin: auto;
+}
+
+
+#questionCard {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+}
+
+#question {
+width: 80%;
+}
+
+#result {
+  clear: both;
+}
+
+@media (max-width: @screen-xs-max) { ... }
+@media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) { ... }
+@media (min-width: @screen-md-min) and (max-width: @screen-md-max) { ... }
+@media (min-width: @screen-lg-min) { ... }
