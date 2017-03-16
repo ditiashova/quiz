@@ -10,28 +10,68 @@ html {
 body {
     margin: auto;
     font-family: Calibri;
+    background-color: peachpuff;
 }
-.container {
+
+header, .container {
   display: block;
   margin: auto;
+}
+
+h1, h3 {
+    text-align: center;
 }
 
 
 #questionCard {
   display: block;
-  margin: 10px auto;
-  padding: 10px;
+  margin: 15px auto;
+  padding: 20px;
+    max-width: 80%;
+    color: white;
+    border-radius: 10px;
 }
 
 #question {
-width: 80%;
+    width: 80%;
+    margin: 15px auto;
+    padding: 10px;
+    color: black;
+    background-color: whitesmoke;
+    border-radius: 5px;
 }
 
 #result {
   clear: both;
 }
 
+.questionNumber {
+    margin-right: 10px;
+}
+#questionsNumbers {
+    display: block;
+    margin: 5px;
+}
+#variants {
+    display: block;
+    margin: auto;
+}
+.check {
+/*    display: flex;*/
+    margin: 15px auto;
+    width: 80%;
+    display: inline;
+    padding:  10px 10px 10px 20px;
+    border-radius: 5px;
+    color: black;
+    background-color: whitesmoke;
+}
+ .line {
+
+}
+
 @media (max-width: @screen-xs-max) { ... }
 @media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) { ... }
 @media (min-width: @screen-md-min) and (max-width: @screen-md-max) { ... }
 @media (min-width: @screen-lg-min) { ... }
+

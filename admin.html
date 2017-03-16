@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin panel</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="styles-admin.css">
     <link rel="icon" type="image/png" href="http://www.clker.com/cliparts/3/V/U/m/W/U/admin-button-icon-md.png">
 </head>
@@ -31,12 +33,13 @@
     </table>
 
     <p>Press "Add" button to add another question</p>
-    <button type="submit" class="addButton" id="addQuestionButton"><img src="http://www.iconarchive.com/download/i76011/martz90/circle-addon1/text-plus.ico" alt="check sign" height="14px" width="14px">
+    <button type="submit" class="addButton btn btn-primary" id="addQuestionButton"><img src="http://www.iconarchive.com/download/i76011/martz90/circle-addon1/text-plus.ico" alt="check sign" height="14px" width="14px">
         Add question
     </button>
 </div>
 <div id="settingsForQuestions" class="adminEdit">
     <div id="editQuestion">
+        <div id="closeButton"><button type="button" class="addButton btn btn-danger" id="closeQuestionInfo">х</button></div>
         <p>
             <h3>Description</h3>
             Edit the question description in the input below
@@ -52,7 +55,7 @@
             <th>Variant</th>
             <th>Correct </th>
             <th>Delete</th>
-        </tr
+        </tr>
     </table>
     <table id="tableOfOptions">
 
@@ -61,15 +64,15 @@
     <p>
         Press "Add" button to add another variant
     </p>
-    <button type="submit" class="addButton" id="addOptionButton"><img src="http://www.iconarchive.com/download/i76011/martz90/circle-addon1/text-plus.ico" alt="check sign" height="14px" width="14px">
+    <button type="submit" class="addButton btn btn-primary" id="addOptionButton"><img src="http://www.iconarchive.com/download/i76011/martz90/circle-addon1/text-plus.ico" alt="check sign" height="14px" width="14px">
         Add
     </button>
-<!--    <p>
-        Press "Save" button to save your changes.
+    <p>
+        Press "Save" button to add another variant
     </p>
-    <button type="submit" class="addButton" id="saveChangesButton"><img src="https://cdn.shopify.com/s/files/1/0968/8774/files/green-check.png?9202356037592499174" alt="check sign" height="14px" width="14px">
+    <button type="submit" class="addButton btn btn-primary" id="saveButton"><img src="http://www.iconarchive.com/download/i76011/martz90/circle-addon1/text-plus.ico" alt="check sign" height="14px" width="14px">
         Save
-    </button>-->
+    </button>
 
 </div>
 

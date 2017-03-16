@@ -85,3 +85,9 @@ button {
 #settingsForQuestions {
     visibility: hidden;
 }
+#closeButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+

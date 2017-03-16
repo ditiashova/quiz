@@ -3,7 +3,7 @@
 */
 
 /**/
-const colors = ['limegreen', 'crimson', 'cyan', 'darkviolet', 'goldenrod'];
+const colors = ['chocolate', 'midnightblue', 'darkcyan', 'darkviolet', 'sienna'];
 const indexesOfReceivedForAll = [];
 const DomHelper = {
     hideFromDom: function (element) {
@@ -12,12 +12,10 @@ const DomHelper = {
     setElementText: function (element, text) {
         document.getElementById(element).innerHTML = text;
     },
-/*    eventListen: function (event, action) {
-        document.addEventListener(event, action);
-    }*/
 };
 
-let allQuestions = [];
+/*let allQuestions = [];*/
+let questions = [];
 let curQuestion = 0;
 let totalResult = 0;
 let numbers = [];
@@ -35,11 +33,12 @@ function loadData() {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let receivedStr = this.responseText;
-            let questions = JSON.parse(receivedStr);
+            let receivedQuestions = JSON.parse(receivedStr);
+            questions = receivedQuestions;
             let resultQuestions = [];
 
-            for (let i = 0; i < questions.length; i++) {
-                let currQuestion = questions[i];
+            for (let i = 0; i < receivedQuestions.length; i++) {
+                let currQuestion = receivedQuestions[i];
                 let currChoices = [];
                 let currAnswers = [];
 
@@ -57,9 +56,10 @@ function loadData() {
 
                 resultQuestions.push(q);
             }
-            allQuestions = resultQuestions;
-            initializeData();
-            renderQuestionTable();
+
+            /*initializeData();*/
+            renderQuestions();
+
 
         }
     };
@@ -69,27 +69,27 @@ function loadData() {
 }
 function addButtons() {
 
-    for (let i = 0; i < allQuestions.length; i++) {
-        document.getElementById('questionsNumbers').innerHTML += '<button type="button" class="questionNumber">' + (i+1) + '</button>';
+    for (let i = 0; i < questions.length; i++) {
+        document.getElementById('questionsNumbers').innerHTML += '<button type="button" class="questionNumber btn btn-info">' + (i+1) + '</button>';
     }
     numbers = document.querySelectorAll('.questionNumber');
 }
 function addOptions() {
 
-    for (let i = 0; i < allQuestions[curQuestion].choices.length; i++) {
-        document.getElementById('variants').innerHTML += '<div class="check"><div class="circle"><input type="checkbox" name="var" class="radinput" id="choice1"></div><div class="line"><label for="choice1" class="variant">' + allQuestions[curQuestion].choices[i] + '</label></div></div>';
-        variants.push(allQuestions[curQuestion].choices[i]);
+    for (let i = 0; i < questions[curQuestion].choices.length; i++) {
+        document.getElementById('variants').innerHTML += '<div class="check center-block text-left"><label for="choice'+i+'" class="variant checkbox-inline"><input type="checkbox" name="var" class="radinput" id="choice'+i+'">' + questions[curQuestion].choices[i] + '</label></div>';
+        variants.push(questions[curQuestion].choices[i]);
         lines = document.querySelectorAll('.check');
     }
 }
 function initializeData() {
-    /*addButtons();*/
+    addButtons();
     displayQuestion();
     displayVariants();
     displayColor();
     addOptions();
 
-    DomHelper.setElementText('totalQuestions', allQuestions.length);
+    DomHelper.setElementText('totalQuestions', questions.length);
     DomHelper.hideFromDom(document.getElementById('return'));
 
     document.getElementById('button').onclick = processClick;
@@ -105,11 +105,11 @@ function processClick(e) {
 }
 function displayVariants() {
     for (let j = 0; j < variants.length; j++) {
-        variants[j] = allQuestions[curQuestion].choices[j];
+        variants[j] = questions[curQuestion].choices[j];
     }
 }
 function displayQuestion() {
-    DomHelper.setElementText('question', allQuestions[curQuestion].question);
+    DomHelper.setElementText('question', questions[curQuestion].question);
 }
 function displayColor() {
     let random = Math.floor((Math.random() * 4) + 1);
@@ -125,7 +125,7 @@ function changeCard () {
         document.getElementById('return').style.display = 'none';
     }
 
-    if (curQuestion < allQuestions.length) {
+    if (curQuestion < questions.length) {
 
         DomHelper.setElementText('currentQuestion', curQuestion + 1);
         displayQuestion();
@@ -136,7 +136,7 @@ function changeCard () {
         countResults();
         showResults();
     }
-    if (curQuestion === allQuestions.length-1) {
+    if (curQuestion === questions.length-1) {
         DomHelper.setElementText('button', 'Results');
     } else {
         DomHelper.setElementText('button', 'Confirm');
@@ -164,17 +164,17 @@ function hideQuestion() {
 }
 function countResults () {
 
-  for (let i = 0; i < allQuestions.length; i++) {
+  for (let i = 0; i < questions.length; i++) {
       let correctInOneQuestion = 0;
 
-      if (indexesOfReceivedForAll[i] && indexesOfReceivedForAll[i].length === allQuestions[i].correctAnswer.length) {
+      if (indexesOfReceivedForAll[i] && indexesOfReceivedForAll[i].length === questions[i].correctAnswer.length) {
         for (let j = 0; j < indexesOfReceivedForAll[i].length; j++) {
-            if (indexesOfReceivedForAll[i][j] === allQuestions[i].correctAnswer[j]) {
+            if (indexesOfReceivedForAll[i][j] === questions[i].correctAnswer[j]) {
             correctInOneQuestion++;
             }
         }
       }
-      if (correctInOneQuestion === allQuestions[i].correctAnswer.length) {
+      if (correctInOneQuestion === questions[i].correctAnswer.length) {
           totalResult++;
       }
   }
@@ -203,7 +203,7 @@ function changeQuestionNumber(e) {
 
 
 /*model*/
-const defaultQuestion = {
+/*const defaultQuestion = {
     description: 'Some question',
     options: [
         {
@@ -214,19 +214,7 @@ const defaultQuestion = {
             isCorrect: true
         }
     ]
-};
-const defaultQuestion2 = {
-    description: 'Another question',
-    options: [
-        {
-            description: 'dfdsf option',
-            isCorrect: true
-        }, {
-            description: 'asdsf option',
-            isCorrect: true
-        }
-    ]
-};
+};*/
 const emptyQuestion = {
     description: '',
     options: []
@@ -235,25 +223,28 @@ const emptyOption = {
     description: '',
     isCorrect: false
 };
-let questions = [defaultQuestion];
+
 let currentQuestionIndex = 0;
-
-
 
 /*controller*/
 const addQuestionButtonView = document.getElementById('addQuestionButton');
 const addOptionButton = document.getElementById('addOptionButton');
-
+const saveButton = document.getElementById('saveButton');
 
 const questionsView = document.getElementById('tableOfQuestions');
 const optionsView = document.getElementById('tableOfOptions');
 const rightBoxView = document.getElementById('settingsForQuestions');
+const closeQuestionInfo = document.getElementById('closeQuestionInfo');
 
-window.onload = renderQuestions();
+/*window.onload = renderQuestions();*/
 addQuestionButtonView.addEventListener('click', addQuestion);
 addOptionButton.addEventListener('click', pushOption);
+saveButton.addEventListener('click', postQuestion);
+closeQuestionInfo.addEventListener('click', hideQuestionInfo);
 
-
+function postQuestion() {
+    /*here we create POST request*/
+}
 
 function renderQuestions() {
     questionsView.innerHTML = '';
@@ -302,13 +293,13 @@ function hideQuestionInfo() {
 }
 
 function addQuestion() {
-    pushQuestion();
-    currentQuestionIndex = questions.length-1;
-    renderQuestion();
+    pushQuestion(); /*creates new empty question and push it to main array*/
+    currentQuestionIndex = questions.length-1; /*increase question counter*/
+    renderQuestionBox(); /*load right-sided data for the question*/
 }
 
 
-function renderQuestion() {
+function renderQuestionBox() {
     rightBoxView.style.visibility = 'visible';
     const currQuestionDescriptionView = document.getElementById('adminQuestionInput');
     currQuestionDescriptionView.value = questions[currentQuestionIndex].description;
@@ -372,8 +363,7 @@ function pushOption() {
 
 function displayQuestionDetails(index) {
     currentQuestionIndex = index;
-    renderQuestion();
-
+    renderQuestionBox();
 }
 
 function updateQuestionDescription(e){
