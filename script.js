@@ -14,8 +14,9 @@ const DomHelper = {
     },
 };
 
-/*let allQuestions = [];*/
-let questions = [];
+let allQuestions = [];
+let questionsServer = [];
+/*let questions = [];*/
 let curQuestion = 0;
 let totalResult = 0;
 let numbers = [];
@@ -34,14 +35,15 @@ function loadData() {
         if (this.readyState == 4 && this.status == 200) {
             let receivedStr = this.responseText;
             let receivedQuestions = JSON.parse(receivedStr);
-            questions = receivedQuestions;
+            questionsServer = receivedQuestions;
+            questions = questionsServer;
+
             let resultQuestions = [];
 
             for (let i = 0; i < receivedQuestions.length; i++) {
                 let currQuestion = receivedQuestions[i];
                 let currChoices = [];
                 let currAnswers = [];
-
                 for (let j = 0; j < currQuestion.options.length; j++) {
                     currChoices.push(currQuestion.options[j].description);
                     if (currQuestion.options[j].isCorrect)
@@ -56,9 +58,10 @@ function loadData() {
 
                 resultQuestions.push(q);
             }
+            allQuestions = resultQuestions;
+            initializeData();
 
-            /*initializeData();*/
-            renderQuestions();
+
 
 
         }
@@ -67,18 +70,21 @@ function loadData() {
     xhttp.open("GET", "http://localhost:8080/questions", true);
     xhttp.send();
 }
+
+
 function addButtons() {
 
-    for (let i = 0; i < questions.length; i++) {
+    for (let i = 0; i < allQuestions.length; i++) {
         document.getElementById('questionsNumbers').innerHTML += '<button type="button" class="questionNumber btn btn-info">' + (i+1) + '</button>';
     }
     numbers = document.querySelectorAll('.questionNumber');
 }
 function addOptions() {
+    document.getElementById('variants').innerHTML = '';
+    for (let i = 0; i < allQuestions[curQuestion].choices.length; i++) {
 
-    for (let i = 0; i < questions[curQuestion].choices.length; i++) {
-        document.getElementById('variants').innerHTML += '<div class="check center-block text-left"><label for="choice'+i+'" class="variant checkbox-inline"><input type="checkbox" name="var" class="radinput" id="choice'+i+'">' + questions[curQuestion].choices[i] + '</label></div>';
-        variants.push(questions[curQuestion].choices[i]);
+        document.getElementById('variants').innerHTML += '<div class="check center-block text-left"><label for="choice'+i+'" class="variant checkbox-inline"><input type="checkbox" name="var" class="radinput" id="choice'+i+'">' + allQuestions[curQuestion].choices[i] + '</label></div>';
+        variants.push(allQuestions[curQuestion].choices[i]);
         lines = document.querySelectorAll('.check');
     }
 }
@@ -89,7 +95,7 @@ function initializeData() {
     displayColor();
     addOptions();
 
-    DomHelper.setElementText('totalQuestions', questions.length);
+    DomHelper.setElementText('totalQuestions', allQuestions.length);
     DomHelper.hideFromDom(document.getElementById('return'));
 
     document.getElementById('button').onclick = processClick;
@@ -100,16 +106,18 @@ function processClick(e) {
   saveAnswers();
   changeQuestionNumber(e);
   changeCard();
-/*  showChecked();*/
+  showChecked();
 
 }
-function displayVariants() {
-    for (let j = 0; j < variants.length; j++) {
-        variants[j] = questions[curQuestion].choices[j];
-    }
-}
+
 function displayQuestion() {
-    DomHelper.setElementText('question', questions[curQuestion].question);
+    DomHelper.setElementText('question', allQuestions[curQuestion].question);
+}
+function displayVariants() {
+    for (let i = 0; i < variants.length; i++) {
+        variants[i] = allQuestions[curQuestion].choices[i];
+    }
+
 }
 function displayColor() {
     let random = Math.floor((Math.random() * 4) + 1);
@@ -125,18 +133,19 @@ function changeCard () {
         document.getElementById('return').style.display = 'none';
     }
 
-    if (curQuestion < questions.length) {
+    if (curQuestion < allQuestions.length) {
 
         DomHelper.setElementText('currentQuestion', curQuestion + 1);
         displayQuestion();
         displayVariants();
+        addOptions();
 
     } else {
         hideQuestion();
         countResults();
         showResults();
     }
-    if (curQuestion === questions.length-1) {
+    if (curQuestion === allQuestions.length-1) {
         DomHelper.setElementText('button', 'Results');
     } else {
         DomHelper.setElementText('button', 'Confirm');
@@ -164,17 +173,17 @@ function hideQuestion() {
 }
 function countResults () {
 
-  for (let i = 0; i < questions.length; i++) {
+  for (let i = 0; i < allQuestions.length; i++) {
       let correctInOneQuestion = 0;
 
-      if (indexesOfReceivedForAll[i] && indexesOfReceivedForAll[i].length === questions[i].correctAnswer.length) {
+      if (indexesOfReceivedForAll[i] && indexesOfReceivedForAll[i].length === allQuestions[i].correctAnswer.length) {
         for (let j = 0; j < indexesOfReceivedForAll[i].length; j++) {
-            if (indexesOfReceivedForAll[i][j] === questions[i].correctAnswer[j]) {
+            if (indexesOfReceivedForAll[i][j] === allQuestions[i].correctAnswer[j]) {
             correctInOneQuestion++;
             }
         }
       }
-      if (correctInOneQuestion === questions[i].correctAnswer.length) {
+      if (correctInOneQuestion === allQuestions[i].correctAnswer.length) {
           totalResult++;
       }
   }
@@ -188,10 +197,262 @@ function changeQuestionNumber(e) {
         curQuestion++;
     } else if (e.target.id === 'return') {
         curQuestion--;
-    } else if (e.target.className === 'questionNumber') {
+    } else if (e.target.className === 'questionNumber btn btn-info') {
         curQuestion = +e.target.innerHTML-1;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Created by INNA on 16.03.2017.
+ */
+/*model*/
+const emptyQuestion = {
+    description: '',
+    options: []
+};
+const emptyOption = {
+    description: '',
+    isCorrect: false
+};
+let currentQuestionIndex = 0;
+
+/*controller*/
+const addQuestionButtonView = document.getElementById('addQuestionButton');
+const rightBoxView = document.getElementById('settingsForQuestions');
+const saveButton = document.getElementById('saveButton');
+const updateQuestionInfoButton = document.getElementById('updateQuestionInfo');
+const questionsView = document.getElementById('tableOfQuestions');
+const optionsView = document.getElementById('tableOfOptions');
+const closeQuestionInfo = document.getElementById('closeQuestionInfo');
+const cancelQuestionButton = document.getElementById('cancelQuestion');
+const addOptionButton = document.getElementById('addOptionButton');
+let iD = 0;
+addQuestionButtonView.addEventListener('click', createEmptyQuestion); /*would be better
+to add here displayBox and pass (tempQuestion)*/
+closeQuestionInfo.addEventListener('click', hideQuestionInfo);
+cancelQuestionButton.addEventListener('click', cancelChanges);
+
+
+function createEmptyQuestion() {
+    saveButton.style.visibility = 'visible';
+    updateQuestionInfoButton.style.visibility = 'hidden';
+    let newTempQuestion = [JSON.parse(JSON.stringify(emptyQuestion))];
+    currentQuestionIndex = 0;
+    renderQuestionBox(newTempQuestion[currentQuestionIndex]);
+}
+
+function renderQuestions() {
+    questionsView.innerHTML = '';
+    for (let i = 0; i < questions.length; i++) {
+        questionsView.innerHTML +=
+            `<tr >\
+                <td>${i + 1}</td> \
+                <td class="newQuestion">${questions[i].description}</td>\
+                <td><img src="http://www.iconsdb.com/icons/download/red/minus-4-512.gif" alt="minus sign" height="20px" width="20px" class="minus-question"></td>\
+            </tr>`;
+    }
+    const arr = document.querySelectorAll('.newQuestion');
+    const minus = document.querySelectorAll('.minus-question');
+    for (let i = 0; i < arr.length; i++) {
+        arr[i].addEventListener('click', function () {
+            if (arr[i].style.backgroundColor === 'aquamarine') {
+                hideQuestionInfo();
+                arr[i].style.backgroundColor = 'white'
+            } else {
+                displayQuestionDetails(i);
+                arr[i].style.backgroundColor = 'aquamarine';
+            }
+        });
+    }
+    for (let i = 0; i < minus.length; i++) {
+        minus[i].addEventListener('click', function () {
+            deleteQuestion(i);
+        });
+    }
+}
+function deleteQuestion(i) {
+    deleteQuestionServer(questions[i].id);
+    questions.splice(i, 1);
+    renderQuestions();
+    hideQuestionInfo();
+}
+function deleteQuestionServer(id) {
+    let xhttp = new XMLHttpRequest();
+    let addressToDelete = "http://localhost:8080/questions/" + id;
+    xhttp.open("DELETE", addressToDelete, true);
+    xhttp.send();
+}
+function saveQuestion(question) {
+    postQuestionServer(question);
+    hideQuestionInfo();
+
+}
+function postQuestionServer(objToPost) {
+    let myJSON = JSON.stringify(objToPost);
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let receivedStr = this.responseText;
+            let receivedQuestions = JSON.parse(receivedStr);
+            iD = receivedQuestions.id;
+            saveAndAddId(objToPost, iD)
+        }
+    };
+    xhttp.open("POST", "http://localhost:8080/questions", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(myJSON);
+}
+
+function saveAndAddId(question, id) {
+    questions.push(question);
+    questions[questions.length-1].id = id;
+    renderQuestions();
+}
+function putQuestionServer(id, objToChange) {
+    let addressToChange = "http://localhost:8080/questions/" + id;
+    let myJSON = JSON.stringify(objToChange);
+    let xhttp = new XMLHttpRequest();
+    xhttp.open("PUT", addressToChange, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(myJSON);
+}
+function hideQuestionInfo() {
+    rightBoxView.style.visibility = 'hidden';
+    hideButtons();
+}
+function hideButtons() {
+    saveButton.style.visibility = 'hidden';
+    updateQuestionInfoButton.style.visibility = 'hidden';
+}
+
+function renderQuestionBox(question) {
+
+    addOptionButton.addEventListener('click', function() {
+        createNewOption(question)
+    });
+
+    rightBoxView.style.visibility = 'visible';
+    const currentQuestionDesc = document.getElementById('adminQuestionInput');
+    currentQuestionDesc.value = question.description;
+    currentQuestionDesc.addEventListener('keyup', function (e){
+        updateQuestionDescription(e, question);
+    });
+    renderOptions(question);
+
+    saveButton.addEventListener('click', function(){
+        saveQuestion(question);
+    });
+
+
+    updateQuestionInfoButton.addEventListener('click', function () {
+        questions[currentQuestionIndex] = question;
+        putQuestionServer(questions[currentQuestionIndex].id, question);
+        renderQuestions();
+        hideQuestionInfo();
+    });
+
+
+}
+function displayQuestionDetails(index) {
+    saveButton.style.visibility = 'hidden';
+    updateQuestionInfoButton.style.visibility = 'visible';
+    currentQuestionIndex = index;
+    renderQuestionBox(questions[index]);
+}
+function updateQuestionDescription(e, question) {
+    question.description = e.target.value;
+    return question;
+}
+
+
+
+
+function renderOptions(question) {
+    addOptionButton.removeEventListener('click', function() {
+        createNewOption(question)
+    });
+    optionsView.innerHTML = '';
+    for (let i = 0; i < question.options.length; i++) {
+        let checked = question.options[i].isCorrect ? 'checked' : '';
+        optionsView.innerHTML +=
+            `<tr class="newOption">\
+                <td class="optionNumber">${i + 1}</td>\
+                <td><input type="text" name="questionVariant" \
+                    value="${question.options[i].description}"\
+                    class="adminOptionsInput">\
+                </td>\
+                <td>\
+                    <input type="checkbox" class="checkbox" ${checked}>\
+                </td>\
+                <td>\
+                    <img src="http://www.iconsdb.com/icons/download/red/minus-4-512.gif" alt="minus sign" height="20px" width="20px" class="minus-option">\
+                </td>\
+            </tr>`;
+    }
+    const optionDescription = document.querySelectorAll('.adminOptionsInput');
+    const optionIsCorrect = document.querySelectorAll('.checkbox');
+    const minus = document.querySelectorAll('.minus-option');
+
+    for (let i = 0; i < optionDescription.length; i++) {
+        optionDescription[i].addEventListener('keyup', function (e) {
+            updateOptionDescription(i, e, question);
+        });
+        optionIsCorrect[i].addEventListener('click', function (e) {
+            updateOptionIsCorrect(i, e, question);
+        });
+    }
+    for (let i = 0; i < minus.length; i++) {
+        minus[i].addEventListener('click', function () {
+            deleteOption(i, question);
+        });
+    }
+    return question;
+}
+
+function createNewOption(question){
+    question.options.push(JSON.parse(JSON.stringify(emptyOption)));
+    renderOptions(question);
+}
+function updateOptionDescription(i, e, question) {
+    question.options[i].description = e.target.value;
+}
+function updateOptionIsCorrect(i, e, question) {
+    question.options[i].isCorrect = e.target.checked;
+}
+function deleteOption(i, question) {
+    question.options.splice(i, 1);
+    renderOptions(question);
+}
+/*function pushOption(question) {
+    question.options.push(JSON.parse(JSON.stringify(emptyOption)));
+    renderOptions(question);
+}*/
+
+function cancelChanges() {
+    renderQuestions();
+    hideQuestionInfo();
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**
@@ -215,6 +476,7 @@ function changeQuestionNumber(e) {
         }
     ]
 };*/
+/*
 const emptyQuestion = {
     description: '',
     options: []
@@ -223,29 +485,53 @@ const emptyOption = {
     description: '',
     isCorrect: false
 };
+*/
 
-let currentQuestionIndex = 0;
+/*let currentQuestionIndex = 0;
+let newTempQuestion = {};*/
+
 
 /*controller*/
-const addQuestionButtonView = document.getElementById('addQuestionButton');
-const addOptionButton = document.getElementById('addOptionButton');
-const saveButton = document.getElementById('saveButton');
+/*const addQuestionButtonView = document.getElementById('addQuestionButton');*/
+/*const addOptionButton = document.getElementById('addOptionButton');*/
+/*const saveButton = document.getElementById('saveButton');*/
+/*const cancelQuestionButton = document.getElementById('cancelQuestion');
 
 const questionsView = document.getElementById('tableOfQuestions');
 const optionsView = document.getElementById('tableOfOptions');
 const rightBoxView = document.getElementById('settingsForQuestions');
 const closeQuestionInfo = document.getElementById('closeQuestionInfo');
 
-/*window.onload = renderQuestions();*/
+/!*window.onload = renderQuestions();*!/
 addQuestionButtonView.addEventListener('click', addQuestion);
 addOptionButton.addEventListener('click', pushOption);
-saveButton.addEventListener('click', postQuestion);
-closeQuestionInfo.addEventListener('click', hideQuestionInfo);
+closeQuestionInfo.addEventListener('click', hideQuestionInfo);*/
 
-function postQuestion() {
-    /*here we create POST request*/
+
+/*
+function postQuestion(objToPost) {
+    let myJSON = JSON.stringify(objToPost);
+    let xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "http://localhost:8080/questions", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(myJSON);
 }
+*/
 
+
+function getLastData() {
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let receivedStr = this.responseText;
+            let receivedQuestions = JSON.parse(receivedStr);
+            questions = receivedQuestions;
+        }
+    };
+    xhttp.open("GET", "http://localhost:8080/questions", true);
+    xhttp.send();
+}
+/*
 function renderQuestions() {
     questionsView.innerHTML = '';
     for (let i = 0; i < questions.length; i++) {
@@ -275,37 +561,68 @@ function renderQuestions() {
             deleteQuestion(i);
         });
     }
-}
+}*/
 
-function deleteQuestion(i) {
+/*function deleteQuestion(i) {
+    deleteQuestionServer(questions[i].id);
     questions.splice(i, 1);
     renderQuestions();
     hideQuestionInfo();
-}
 
+}*/
+/*
+function deleteQuestionServer(id) {
+    let xhttp = new XMLHttpRequest();
+    let addressToDelete = "http://localhost:8080/questions/" + id;
+    xhttp.open("DELETE", addressToDelete, true);
+    xhttp.send();
+}*/
+
+/*
 function deleteOption(i) {
     questions[currentQuestionIndex].options.splice(i, 1);
     renderOptions();
 }
+*/
 
-function hideQuestionInfo() {
+/*function hideQuestionInfo() {
     rightBoxView.style.visibility = 'hidden';
-}
+}*/
 
-function addQuestion() {
-    pushQuestion(); /*creates new empty question and push it to main array*/
-    currentQuestionIndex = questions.length-1; /*increase question counter*/
-    renderQuestionBox(); /*load right-sided data for the question*/
-}
+/*function addQuestion() {
+    let newTempQuestion = emptyQuestion;
+    /!*pushQuestion();*!/ /!*creates new empty question and push it to main array!*!/
+    /!*currentQuestionIndex = questions.length-1;*!/ /!*increase question counter*!/
+    renderQuestionBox(newTempQuestion, function() {deleteQuestion(currentQuestionIndex)}); /!*load right-sided data for the question*!/
+}*/
 
 
-function renderQuestionBox() {
+/*
+function renderQuestionBox(thisQuestion, changeBehavior) {
     rightBoxView.style.visibility = 'visible';
     const currQuestionDescriptionView = document.getElementById('adminQuestionInput');
-    currQuestionDescriptionView.value = questions[currentQuestionIndex].description;
-    currQuestionDescriptionView.addEventListener('keyup', updateQuestionDescription);
+    /!*let requiredQuestion = thisQuestion;*!/
+    currQuestionDescriptionView.value = requiredQuestion.description;
+    currQuestionDescriptionView.addEventListener('keyup', function() {
+        updateQuestionDescription()
+    });
     renderOptions();
+
+    cancelQuestionButton.addEventListener('click', function() {
+        changeBehavior
+    });
+    saveButton.addEventListener('click', function(){
+        saveQuestionButton(questions[currentQuestionIndex])
+    });
+
 }
+*/
+/*
+
+function saveQuestionButton(dataToSend) {
+    postQuestion(dataToSend);
+}
+
 function renderOptions() {
     optionsView.innerHTML = '';
     for (let i = 0; i < questions[currentQuestionIndex].options.length; i++) {
@@ -342,7 +659,9 @@ function renderOptions() {
             });
         }
 }
+*/
 
+/*
 function updateOptionDescription(i, e) {
     questions[currentQuestionIndex].options[i].description = e.target.value;
 }
@@ -351,25 +670,32 @@ function updateOptionIsCorrect(i, e) {
     questions[currentQuestionIndex].options[i].isCorrect = e.target.checked;
 }
 
-function pushQuestion() {
+*/
+
+/*function pushQuestion() {
     questions.push(JSON.parse(JSON.stringify(emptyQuestion)));
     renderQuestions();
-}
+}*/
 
+
+/*
 function pushOption() {
     questions[currentQuestionIndex].options.push(JSON.parse(JSON.stringify(emptyOption)));
     renderOptions();
 }
+*/
 
-function displayQuestionDetails(index) {
+/*function displayQuestionDetails(index) {
     currentQuestionIndex = index;
-    renderQuestionBox();
-}
+    renderQuestionBox(function () {hideQuestionInfo()});
+}*/
 
+/*
 function updateQuestionDescription(e){
     questions[currentQuestionIndex].description = e.target.value;
     renderQuestions();
 }
+*/
 
 
 

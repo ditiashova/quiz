@@ -85,9 +85,16 @@ button {
 #settingsForQuestions {
     visibility: hidden;
 }
-#closeButton {
+#closeButton, #saveDeleteButtons {
     display: flex;
     flex-direction: row;
+}
+#closeButton {
     justify-content: flex-end;
 }
-
+#saveDeleteButtons {
+    justify-content: center;
+}
+#cancelQuestion, saveButton {
+   margin: 10px;
+}
