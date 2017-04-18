@@ -172,14 +172,17 @@ function changeCard() {
 function hideQuestion() {
     $('.variants').each(el => el.css('display', 'none'));
     inputs.each(function() {
-        $(this).css('display', 'none')});
+        $(this).css('display', 'none')
+    });
     $('#questionNumeration').css('display', 'none');
     confirmButton.css('display', 'none');
     returnButton.css('display', 'none');
     lines.each(function() {
-        $(this).css('display', 'none')});
+        $(this).css('display', 'none')
+    });
     buttonNumbers.each(function() {
-        $(this).css('display', 'none')});
+        $(this).css('display', 'none')
+    });
 }
 function countResults() {
     for (let i = 0; i < quizQuestions.length; i++) {

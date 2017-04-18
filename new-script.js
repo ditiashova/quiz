@@ -1,4 +1,5 @@
 let questions = [];
+
 loadData();
 
 /*model*/
@@ -17,75 +18,107 @@ let optionsTotal = 0;
 let serverRequest = 'post';
 let numberOfQuestionToPut = 0;
 
+
 /*view*/
-const questionsList = document.getElementById('tableOfQuestions');
-const questionInfo = document.getElementById('settingsForQuestions');
-const addQuestionButton = document.getElementById('addQuestionButton');
-const optionsList = document.getElementById('tableOfOptions');
-const addOptionButton = document.getElementById('addOptionButton');
-const saveButton = document.getElementById('saveButton');
-const cancelButton = document.getElementById('cancelQuestion');
-const closeButton = document.getElementById('closeQuestionInfo');
+const questionsList = $('#tableOfQuestions');
+const questionInfo = $('#settingsForQuestions');
+const addQuestionButton = $('#addQuestionButton');
+const optionsList = $('#tableOfOptions')[0];
+const addOptionButton = $('#addOptionButton');
+const saveButton = $('#saveButton');
+const cancelButton = $('#cancelQuestion');
+const closeButton = $('#closeQuestionInfo');
+const confirmChangesButton = $('#confirmChangesButton');
+const backToEditButton = $('#backToEditButton');
+const confirmationWindow = $('#confirmationWindow')[0];
 
 /*controller*/
-addQuestionButton.addEventListener('click', addNewQuestion);
-addOptionButton.addEventListener('click', addNewOption);
-saveButton.addEventListener('click', saveCurrentQuestion);
-cancelButton.addEventListener('click', cancelCurrentQuestion);
-closeButton.addEventListener('click', cancelCurrentQuestion);
+addQuestionButton.on('click', addNewQuestion);
+addOptionButton.on('click', addNewOption);
+saveButton.on('click', displayPopUpWindow);
+cancelButton.on('click', cancelCurrentQuestion);
+closeButton.on('click', cancelCurrentQuestion);
+confirmChangesButton.on('click', function() {
+    hidePopUpWindow();
+    saveCurrentQuestion();
+});
+backToEditButton.on('click', hidePopUpWindow);
+
 
 /*functions*/
+function displayPopUpWindow() {
+    $(confirmationWindow).fadeIn('slow');
+    setInterval(blinkItem, 600);
+}
+function hidePopUpWindow() {
+    $('#confirmationWindow').fadeOut('slow');
+}
+function blinkItem() {
+    $(confirmChangesButton[0]).fadeOut(1000);
+    $(confirmChangesButton[0]).fadeIn(1000);
+    setInterval(blinkItem, 2000);
+}
 function loadData() {
-    let xhttp = new XMLHttpRequest();
-    /*prepare questions*/
-    xhttp.onreadystatechange = function () {
+    /*let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             questions = JSON.parse(this.responseText);
             loadQuestionsData();
         }
     };
     xhttp.open("GET", "http://localhost:8080/questions", true);
-    xhttp.send();
+    xhttp.send();*/
+        $.ajax({
+            url: "http://localhost:8080/questions",
+            type: 'GET',
+            success: function(responseText) {
+                questions = responseText;
+                loadQuestionsData();
+            }
+        })
+
 }
 function loadQuestionsData() {
     renderQuestionsList();
     manageQuestionsList();
 }
 function renderQuestionsList() {
-    questionsList.innerHTML = '';
+    questionsList.html('');
     questionsTotal = questions.length;
     for (let i = 0; i < questionsTotal; i++) {
-        questionsList.innerHTML +=
-            `<tr >\
-                <td>${i + 1}</td> \
-                <td class="newQuestion">${questions[i].description}</td>\
-                <td><img src="https://img.clipartfest.com/af46d7d23d92163b442697580e4853d2_green-plus-minus-hi-free-plus-and-minus-clipart_600-598.png" alt="minus sign" height="20px" width="20px" class="minus-question"></td>\
-            </tr>`;
+        let tableLine  = Handlebars.compile($('#templateQuestionList').html());
+        let tableData = {
+            number: i+1,
+            questionsDescription: questions[i].description
+        };
+        questionsList.append(tableLine(tableData));
+
     }
 }
 function manageQuestionsList() {
-    const questionDescriptions = document.getElementsByClassName('newQuestion');
-    const minusSigns = document.getElementsByClassName('minus-question');
+    const questionDescriptions = $('.newQuestion');
+    const minusSigns = $('.minus-question');
     for (let i = 0; i < questionsTotal; i++) {
-        questionDescriptions[i].addEventListener('click', function (){
+        $(questionDescriptions[i]).on('click', function (){
             manageQuestion(questionDescriptions[i], i);
         });
-        minusSigns[i].addEventListener('click', function () {
+        $(minusSigns[i]).on('click', function () {
             deleteQuestion(i);
         } )
     }
 }
 function manageQuestion(row, i) {
     if (row.style.backgroundColor !== 'aquamarine') {
-        Array.from(document.getElementsByClassName("newQuestion")).forEach(el => el.style.backgroundColor = 'white');
+        Array.from($(".newQuestion")).forEach(function(el) {
+            el.style.backgroundColor ='white'});
         tempQuestion = JSON.parse(JSON.stringify(questions[i]));
         serverRequest = 'put';
         numberOfQuestionToPut = i;
         displayQuestionInfo();
-        row.style.backgroundColor = 'aquamarine';
+        $(row).css('backgroundColor', 'aquamarine');
     } else {
         hideQuestionInfo();
-        row.style.backgroundColor = 'white';
+        $(row).css('backgroundColor', 'white');
     }
 }
 function clearTempQuestion() {
@@ -94,7 +127,7 @@ function clearTempQuestion() {
 }
 function hideQuestionInfo() {
     clearTempQuestion();
-    questionInfo.style.visibility = 'hidden';
+    questionInfo.css('visibility', 'hidden');
 }
 function addNewQuestion() {
     clearTempQuestion();
@@ -102,68 +135,63 @@ function addNewQuestion() {
     displayQuestionInfo();
 }
 function displayQuestionInfo() {
-    questionInfo.style.visibility = 'visible';
+    $(questionInfo).css('visibility', 'visible');
     manageCurrentQuestion(tempQuestion);
 }
 function manageCurrentQuestion(currentQuestion) {
-    const currentQuestionDescription = document.getElementById('adminQuestionInput');
-    currentQuestionDescription.value = currentQuestion.description;
+    const currentQuestionDescription = $('#adminQuestionInput')[0];
+    $(currentQuestionDescription).val(currentQuestion.description);
     manageCurrentQuestionDescription(currentQuestionDescription);
     manageCurrentQuestionOptions();
 }
 function manageCurrentQuestionDescription(descriptionInput) {
-    descriptionInput.addEventListener('keyup', function (e) {
+    $(descriptionInput).on('keyup', function (e) {
         tempQuestion.description = e.target.value;
         return tempQuestion;
     })
 }
 function manageCurrentQuestionOptions() {
     renderOptionsList();
-    manageOptionsList();
+
 }
 function addNewOption() {
     tempQuestion.options.push(JSON.parse(JSON.stringify(emptyOption)));
     manageCurrentQuestionOptions();
 }
 function renderOptionsList() {
-    optionsList.innerHTML = '';
+    $(optionsList).html('');
     optionsTotal = tempQuestion.options.length;
     for (let i = 0; i < optionsTotal; i++) {
-        let checked = tempQuestion.options[i].isCorrect ? 'checked' : '';
-        optionsList.innerHTML +=
-            `<tr class="newOption">\
-                <td class="optionNumber">${i + 1}</td>\
-                <td><input type="text" name="questionVariant" \
-                    value="${tempQuestion.options[i].description}"\
-                    class="adminOptionsInput">\
-                </td>\
-                <td>\
-                    <input type="checkbox" class="checkbox" ${checked}>\
-                </td>\
-                <td>\
-                    <img src="https://img.clipartfest.com/af46d7d23d92163b442697580e4853d2_green-plus-minus-hi-free-plus-and-minus-clipart_600-598.png" alt="minus sign" height="20px" width="20px" class="minus-option">\
-                </td>\
-            </tr>`;
+        let tableLine = Handlebars.compile($('#templateOptionsList').html());
+        let isChecked = tempQuestion.options[i].isCorrect ? 'checked' : '';
+        let tableData = {
+            number: i+1,
+            optionDescription: tempQuestion.options[i].description,
+            checked: isChecked,
+            i: i
+        };
+        $(optionsList).append(tableLine(tableData));
     }
-}
-function manageOptionsList() {
-    const optionDescription = document.getElementsByClassName('adminOptionsInput');
-    const optionIsCorrect = document.getElementsByClassName('checkbox');
-    const minusSigns = document.getElementsByClassName('minus-option');
+    const optionDescription = $('.adminOptionsInput');
+    const optionIsCorrect = $('.checkbox');
+    const minusSigns = $('.minus-option');
     for (let i = 0; i < optionsTotal; i++) {
-        optionDescription[i].addEventListener('keyup', function (e) {
+        $(optionDescription[i]).on('keyup', function (e) {
             tempQuestion.options[i].description = e.target.value;
         });
-        optionIsCorrect[i].addEventListener('click', function (e) {
+        $(optionIsCorrect[i]).on('click', function (e) {
             tempQuestion.options[i].isCorrect = e.target.checked;
         });
-        minusSigns[i].addEventListener('click', function () {
+        $(minusSigns[i]).on('click', function () {
             tempQuestion.options.splice(i, 1);
             renderOptionsList();
         });
     }
+
 }
+
 function saveCurrentQuestion() {
+
     if (serverRequest === 'post') {
         postQuestionToServer();
     } else if (serverRequest === 'put') {
@@ -177,29 +205,37 @@ function saveCurrentQuestion() {
 function putQuestionToServer() {
     let addressToChange = 'http://localhost:8080/questions/' + tempQuestion.id;
     let myPutJSON = JSON.stringify(tempQuestion);
-    let xhttp = new XMLHttpRequest();
-    xhttp.open('PUT', addressToChange, true);
-    xhttp.setRequestHeader('Content-type', 'application/json');
-    xhttp.send(myPutJSON);
+    $.ajax({
+        url: addressToChange,
+        type: "PUT",
+        data: myPutJSON,
+        dataType: 'json',
+        headers: {'Content-type': 'application/json'}
+    });
+
 }
 function postQuestionToServer() {
     let myPostJSON = JSON.stringify(tempQuestion);
-    let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            questions.push(JSON.parse(this.responseText));
+    $.ajax({
+        url: 'http://localhost:8080/questions',
+        type: 'POST',
+        data: myPostJSON,
+        dataType: 'json',
+        headers: {'Content-type': 'application/json'},
+        success: function(responseText) {
+            questions.push(responseText);
             loadQuestionsData();
         }
-    };
-    xhttp.open('POST', 'http://localhost:8080/questions', true);
-    xhttp.setRequestHeader('Content-type', 'application/json');
-    xhttp.send(myPostJSON);
+    });
+
 }
 function deleteQuestionFromServer(id) {
-    let xhttp = new XMLHttpRequest();
     let addressToDelete = 'http://localhost:8080/questions/' + id;
-    xhttp.open('DELETE', addressToDelete, true);
-    xhttp.send();
+    $.ajax({
+        url: addressToDelete,
+        type: 'DELETE',
+    });
+
 }
 function deleteQuestion(i) {
     deleteQuestionFromServer(questions[i].id);

@@ -66,9 +66,7 @@ h1, h3 {
     color: black;
     background-color: whitesmoke;
 }
- .line {
 
-}
 
 @media (max-width: @screen-xs-max) { ... }
 @media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) { ... }

@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="styles-admin.css">
     <link rel="icon" type="image/png" href="http://www.clker.com/cliparts/3/V/U/m/W/U/admin-button-icon-md.png">
+    <script
+            src="https://code.jquery.com/jquery-3.2.0.js"
+            integrity="sha256-wPFJNIFlVY49B+CuAIrDr932XSb6Jk3J1M22M3E2ylQ="
+            crossorigin="anonymous"></script>
+
 </head>
 <body>
 <header>
@@ -14,7 +19,22 @@
         Admin Panel
     </h1>
 </header>
+
 <main class="container-admin">
+    <div id="confirmationWindow">
+        <div id="confirmationWindowInner">
+            <h4>Are you sure you want to proceed changes?</h4>
+            <div id="windowButtons">
+
+            <button type="button" class="btn btn-success" id="confirmChangesButton">
+                Yes
+            </button>
+                <button type="button" class="btn btn-danger" id="backToEditButton">
+                    No
+                </button>
+            </div>
+        </div>
+    </div>
 <div id="listOfQuestions" class="adminEdit">
     <p>
         Here you can add and delete questions you have for the quiz.
@@ -84,6 +104,40 @@
 
 
 </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.js"></script>
+
+<script type="text/x-handlebars-template" id="templateQuestionList">
+    <tr>
+        <td>
+            {{number}}
+        </td>
+        <td class="newQuestion">
+            {{questionsDescription}}
+        </td>
+        <td>
+            <img src="https://img.clipartfest.com/af46d7d23d92163b442697580e4853d2_green-plus-minus-hi-free-plus-and-minus-clipart_600-598.png" alt="minus sign" height="20px" width="20px" class="minus-question">
+        </td>
+    </tr>
+</script>
+<script type="text/x-handlebars-template" id="templateOptionsList">
+    <tr class="newOption">
+        <td class="optionNumber">
+            {{number}}
+        </td>
+        <td>
+
+            <input type="text" name="questionVariant"
+                   class="adminOptionsInput" value="{{optionDescription}}">
+        </td>
+        <td>
+            <input type="checkbox" class="checkbox" {{checked}}>
+        </td>
+        <td>
+            <img src="https://img.clipartfest.com/af46d7d23d92163b442697580e4853d2_green-plus-minus-hi-free-plus-and-minus-clipart_600-598.png" alt="minus sign" height="20px" width="20px" class="minus-option">
+        </td>
+    </tr>
+</script>
+
 <script src="new-script.js"></script>
 </body>
 </html>

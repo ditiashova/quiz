@@ -12,10 +12,35 @@ body {
     background-color: bisque;
     font-family: Calibri;
 }
-.container {
+.container   {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+}
+
+#confirmationWindow {
+    display: none;
+    position: absolute;
+    margin: 0;
+    width: 400px;
+
+    background-color: #e7eef5;
+    color: darkslategrey;
+}
+#confirmationWindowInner {
+    padding: 20px;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+#windowButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+#windowButtons button {
+    margin-left: 10px;
 }
 
 /*admin CSS*/
