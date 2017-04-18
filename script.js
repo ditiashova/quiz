@@ -1,16 +1,19 @@
 /**
 * Created by INNA on 27.02.2017.
 */
-
-
-
-
+const allQuestions = [
+    {question: "Who was the original author of Dracula?", choices: ["Gustave Eiffel", "Bram Stoker", "Leonardo Da Vinci", "Michelangelo"], correctAnswer: [1]},
+    {question: "Who is the frontman of The Prodigy?", choices: ["Johnny Logan", "Bon Scott", "Keith Flint", "Johnny Logan"], correctAnswer: [2]},
+    {question: "What is the house number of the Simpsons?", choices: ["13", "42", "742", "7"], correctAnswer: [2]},
+    {question: "Who was the first man to fly around the earth with a spaceship?", choices: ["Gagarin", "Mask", "Armstrong", "Bush"], correctAnswer: [0]},
+    {question: "In what year was Google launched on the web?", choices: ["1989", "1998", "1994", "2003"], correctAnswer: [1]}
+];
 const variants = document.querySelectorAll('.variant');
 const inputs = document.querySelectorAll('.radinput');
 const lines = document.querySelectorAll('.check');
-
 const colors = ['limegreen', 'crimson', 'cyan', 'darkviolet', 'goldenrod'];
-const indexesOfReceivedForAll = [];
+const arrayOfAllAnswers = [];
+const indexesOfReceivedAnswers = [];
 const DomHelper = {
     hideFromDom: function (element) {
         element.style.display = 'none'
@@ -20,148 +23,93 @@ const DomHelper = {
     }
 };
 
-let allQuestions = [];
-let curQuestion = 0;
-let totalResult = 0;
-let numbers = [];
+let currentQuestionNum = 0;
+let counterOfCorrect = 0;
+let totalCorrectAnswers = 0;
 
-loadData();
+initializeData();
 
 /* functions */
-function loadData() {
-    let xhttp = new XMLHttpRequest();
-    /*prepare questions*/
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            let receivedStr = this.responseText;
-            let questions = JSON.parse(receivedStr);
-            let resultQuestions = [];
-
-            for (let i = 0; i < questions.length; i++) {
-                let currQuestion = questions[i];
-                let currChoices = [];
-                let currAnswers = [];
-
-                for (let j = 0; j < currQuestion.options.length; j++) {
-                    currChoices.push(currQuestion.options[j].description);
-                    if (currQuestion.options[j].isCorrect)
-                        currAnswers.push(j);
-                }
-
-                let q = {
-                    question: currQuestion.description,
-                    choices: currChoices,
-                    correctAnswer: currAnswers
-                };
-
-                resultQuestions.push(q);
-            }
-            allQuestions = resultQuestions;
-            initializeData();
-        }
-    };
-
-    xhttp.open("GET", "http://localhost:8080/questions", true);
-    xhttp.send();
-}
-function addButtons() {
-    for (let i = 0; i < allQuestions.length; i++) {
-        document.getElementById('questionsNumbers').innerHTML += '<button type="button" class="questionNumber">' + (i+1) + '</button>';
-    }
-    numbers = document.querySelectorAll('.questionNumber');
-}
 function initializeData() {
-    addButtons();
     displayQuestion();
     displayVariants();
-    displayColor();
+    changeBackgroundColor();
 
     DomHelper.setElementText('totalQuestions', allQuestions.length);
     DomHelper.hideFromDom(document.getElementById('return'));
 
-    document.getElementById('button').onclick = processClick;
-    document.getElementById('return').onclick = processClick;
-    numbers.forEach(key => key.addEventListener('click', processClick))
+    document.getElementById('button').onclick = nextQuestionButton;
+    document.getElementById('return').onclick = previousQuestionButton;
 }
-
-function processClick(e) {
-  saveAnswers();
-  changeQuestionNumber(e);
-  changeCard();
-/*  showChecked();*/
-
-}
-
-/*
-function returnClick() {
-    if (curQuestion > 0) {
-        curQuestion--;
-        if (curQuestion === 0) {
-          DomHelper.hideFromDom(document.getElementById('return'));
-        }
-        DomHelper.setElementText('currentQuestion', curQuestion + 1);
-        displayQuestion();
-        displayVariants();
-
-
-    }
-}
-*/
-
-function displayVariants() {
-    for (let j = 0; j < variants.length; j++) {
-        variants[j].innerHTML = allQuestions[curQuestion].choices[j];
-    }
-}
-
-function displayQuestion() {
-    DomHelper.setElementText('question', allQuestions[curQuestion].question);
-}
-
-function displayColor() {
-    let random = Math.floor((Math.random() * 4) + 1);
-    document.getElementById('questionCard').style.background = colors[random];
-}
-
-function changeCard () {
-    inputs.forEach(key => key.checked = false);
-
-    displayColor();
-    if (curQuestion > 0) {
-      document.getElementById('return').style.display = 'inline';
+function manageReturnButton() {
+    if (currentQuestionNum > 0) {
+        document.getElementById('return').style.display = 'inline';
     } else {
-        document.getElementById('return').style.display = 'none';
+        DomHelper.hideFromDom(document.getElementById('return'));
     }
-
-    if (curQuestion < allQuestions.length) {
-
-        DomHelper.setElementText('currentQuestion', curQuestion + 1);
+}
+function manageResultButton() {
+    if (currentQuestionNum !== allQuestions.length-1) {
+        DomHelper.setElementText('button', 'Confirm');
+    } else {
+        DomHelper.setElementText('button', 'Results');
+    }
+}
+function manageGeneralView() {
+    manageReturnButton();
+    manageResultButton();
+    if (currentQuestionNum < allQuestions.length) {
+        DomHelper.setElementText('currentQuestion', currentQuestionNum + 1);
         displayQuestion();
         displayVariants();
-
     } else {
         hideQuestion();
-        countResults();
         showResults();
     }
-    if (curQuestion === allQuestions.length-1) {
-        DomHelper.setElementText('button', 'Results');
-    } else {
-        DomHelper.setElementText('button', 'Confirm');
+}
+function nextQuestionButton() {
+    counterOfCorrect = checkAnswer();
+    clearInputs();
+    addCorrectAnswers();
+    currentQuestionNum++;
+    changeBackgroundColor();
+    manageGeneralView();
+}
+function previousQuestionButton() {
+    currentQuestionNum--;
+    manageGeneralView();
+    clearInputs();
+    showPreviousChosen();
+}
+function addCorrectAnswers() {
+    if (counterOfCorrect !== 0 && !arrayOfAllAnswers[currentQuestionNum] ) {
+        totalCorrectAnswers++;
+        arrayOfAllAnswers[currentQuestionNum] = totalCorrectAnswers;
+    } else if (!arrayOfAllAnswers[currentQuestionNum]) {
+        arrayOfAllAnswers[currentQuestionNum] = 0;
     }
 }
-
-function saveAnswers () {
-  let indexesOfReceivedForSingleQuestion = [];
-  for (let i = 0; i < inputs.length; i++) {
-    if (inputs[i].checked) {
-      indexesOfReceivedForSingleQuestion.push(i);
+function checkAnswer() {
+    let counter = 0;
+    let receivedAnswers = [];
+    indexesOfReceivedAnswers[currentQuestionNum] = [];
+    let correctAnswersNumbers = allQuestions[currentQuestionNum].correctAnswer;
+    for (let i = 0; i < inputs.length; i++) {
+        if (inputs[i].checked) {
+            receivedAnswers.push(i);
+        }
     }
-  }
-  indexesOfReceivedForAll[curQuestion] = indexesOfReceivedForSingleQuestion;
-  return indexesOfReceivedForAll;
-}
+    indexesOfReceivedAnswers[currentQuestionNum] = receivedAnswers;
+    if (correctAnswersNumbers.length === receivedAnswers.length) {
+        for (let i = 0; i < correctAnswersNumbers.length; i++) {
+            if (correctAnswersNumbers[i] === receivedAnswers[i]) {
+                counter++;
+            }
+        }
+    }
 
+    return counter;
+}
 function hideQuestion() {
     variants.forEach(DomHelper.hideFromDom);
     inputs.forEach(DomHelper.hideFromDom);
@@ -169,52 +117,31 @@ function hideQuestion() {
     DomHelper.hideFromDom(document.getElementById('button'));
     DomHelper.hideFromDom(document.getElementById('return'));
     lines.forEach(DomHelper.hideFromDom);
-    numbers.forEach(DomHelper.hideFromDom);
 }
-
-function countResults () {
-
-  for (let i = 0; i < allQuestions.length; i++) {
-      let correctInOneQuestion = 0;
-
-      if (indexesOfReceivedForAll[i] && indexesOfReceivedForAll[i].length === allQuestions[i].correctAnswer.length) {
-        for (let j = 0; j < indexesOfReceivedForAll[i].length; j++) {
-            if (indexesOfReceivedForAll[i][j] === allQuestions[i].correctAnswer[j]) {
-            correctInOneQuestion++;
-            }
-        }
-      }
-      if (correctInOneQuestion === allQuestions[i].correctAnswer.length) {
-          totalResult++;
-      }
-  }
-  return totalResult;
-}
-
 function showResults() {
-    DomHelper.setElementText('question', "You've answered " + totalResult + " questions correctly");
+    DomHelper.setElementText('question', "You've answered " + totalCorrectAnswers + " questions correctly");
 }
-
-function changeQuestionNumber(e) {
-    if (e.target.id === 'button')     {
-        curQuestion++;
-    } else if (e.target.id === 'return') {
-        curQuestion--;
-    } else if (e.target.className === 'questionNumber') {
-        curQuestion = +e.target.innerHTML-1;
-    }
-}
-
-/*
-function showChecked() {
+function showPreviousChosen() {
     for (let i = 0; i < inputs.length; i++) {
-        if (indexesOfReceivedForAll[curQuestion][i] >= 0) {
-            let temp = indexesOfReceivedForAll[curQuestion][i];
-            if (temp >= 0) {
-                inputs[temp].checked = true;
-            } else if (temp) {
-                inputs[temp].checked = false;
+        for (let j = 0; j < indexesOfReceivedAnswers[currentQuestionNum].length; j++) {
+            if (i === indexesOfReceivedAnswers[currentQuestionNum][j]) {
+                inputs[i].checked = true;
             }
         }
     }
-}*/
+}
+function displayVariants() {
+    for (let j = 0; j < variants.length; j++) {
+        variants[j].innerHTML = allQuestions[currentQuestionNum].choices[j];
+    }
+}
+function displayQuestion() {
+    DomHelper.setElementText('question', allQuestions[currentQuestionNum].question);
+}
+function changeBackgroundColor() {
+    let random = Math.floor((Math.random() * 4) + 1);
+    document.getElementById('questionCard').style.background = colors[random];
+}
+function clearInputs() {
+    inputs.forEach(key => key.checked = false);
+}
