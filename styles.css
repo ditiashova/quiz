@@ -1,12 +1,5 @@
-/* Some CSS Setup - nothing to do with flexbox */
-html {
-    box-sizing: border-box;
-}
-
-*, *:before, *:after {
-    box-sizing: inherit;
-}
-
+html { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; }
 body {
     margin: 10px;
     background-color: bisque;
@@ -17,29 +10,8 @@ body {
     flex-direction: column;
     align-items: center;
 }
-
-#questionsNumbers {
-  display: flex;
-  flex-direction: row;
-  margin-top: 15px;
-}
-.questionNumber {
-  border: none;
-  font-size: 20px;
-  background-color: white;
-  color: black;
-  padding: 5px 10px 5px 10px;
-  border-radius: 10%;
-  margin-right:20px;
-}
-
-#questionsNumbers button:hover {
-  background-color: lightgray;
-}
-#variants, #questionsNumbers {
-
+#variants {
     width: 80%;
-
 }
 .check {
     display: flex;
@@ -51,47 +23,38 @@ body {
     margin-bottom: 10px;
     border-radius: 5px;
 }
-
 .circle, .line {
     padding: 10px;
     background-color: white;
 
 }
-
 .circle {
     flex: 1;
     border-radius:50%;
     align-items: center;
-    /*margin-right: -50px;*/
 }
 .line {
     flex: 12;
     margin-left: 10px;
     border-radius: 10px;
 }
-
-
 .check .variant {
     padding: 3px;
     margin: 3px;
     flex-direction: row;
     width: 100%;
 }
-
 #questionCard, #result {
     width: 400px;
     color:ghostwhite;
     border-radius: 10px;
 }
-
 #buttons {
     display: inline;
 }
-
 #button {
     margin-top: 15px;
 }
-
 #question {
     text-align: center;
     width: 80%;
@@ -99,14 +62,4 @@ body {
     background-color: white;
     color: darkslategrey;
     border-radius: 5px;
-}
-
-
-/*admin CSS*/
-.container-admin {
-    display: flex;
-
-}
-.adminEdit {
-    flex: 1;
 }
