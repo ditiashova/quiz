@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>
+        Simple Quiz to Master JS
+    </h1>
+    <div id="questionCard">
+        <h3 id="questionNumeration">
+            Question <span id="currentQuestion">1</span> of <span id="totalQuestions">X</span> questions
+        </h3>
+        <p id="question">
+            Here will be the text of the question for user.Here will be the text of the question for user.Here will be the text of the question for user.
+            Here will be the text of the question for user.
+        </p>
+        <div id="variants">
+            <div class="check">
+                <div class="circle">
+                    <input type="checkbox" name="var" class="radinput" id="choice1">
+                </div>
+                <div class="line">
+                    <label for="choice1" class="variant"></label>
+                </div>
+            </div>
+            <div class="check">
+                <div class="circle">
+                    <input type="checkbox" name="var" class="radinput" id="choice2">
+                </div>
+                <div class="line">
+                    <label for="choice2" class="variant"></label>
+                </div>
+            </div>
+            <div class="check">
+                <div class="circle">
+                    <input type="checkbox" name="var" class="radinput" id="choice3">
+                </div>
+                <div class="line">
+                    <label for="choice3" class="variant"></label>
+                </div>
+            </div>
+            <div class="check">
+                <div class="circle">
+                    <input type="checkbox" name="var" class="radinput" id="choice4">
+                </div>
+                <div class="line">
+                    <label for="choice4" class="variant"></label>
+                </div>
+            </div>
+        </div>
+        <div id="buttons">
+            <button type="button" id="return">Previous</button>
+            <button type="button" id="button">Confirm</button>
+        </div>
+        <p id="result"></p>
+    </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+/* Some CSS Setup  */
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 10px;
+    background-color: bisque;
+    font-family: Calibri;
+}
+.container   {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+#confirmationWindow {
+    display: none;
+    position: absolute;
+    margin: 0;
+    width: 400px;
+
+    background-color: #e7eef5;
+    color: darkslategrey;
+}
+#confirmationWindowInner {
+    padding: 20px;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+#windowButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+#windowButtons button {
+    margin-left: 10px;
+}
+
+/*admin CSS*/
+header, main {
+    display: flex;
+    justify-content: center;
+
+}
+.adminEdit {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    /*    justify-content: flex-start;
+        align-content: center;*/
+    margin: 20px;
+    background-color: powderblue;
+    padding: 20px;
+    /*width: 40%;*/
+
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+    background-color: whitesmoke;
+}
+button:hover, table img:hover {
+    cursor: pointer
+}
+th, td {
+    border-bottom: 1px solid lightgrey;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+}
+tr {
+
+}
+tr:hover {
+    background-color: #e7eef5;
+}
+
+#adminQuestionInput, .adminOptionsInput {
+    width: 80%;
+    padding: 5px;
+    /*border-style: none;*/
+    background-color: white;
+    border: 1px solid cadetblue;
+}
+
+table th:last-child, td:last-child {
+    text-align: center;
+}
+
+button {
+    width: 20%;
+    align-self: center;
+}
+
+#saveChangesButton, #addQuestionButton {
+    width: 100%;
+}
+
+
+#settingsForQuestions {
+    visibility: hidden;
+}
+#closeButton, #saveDeleteButtons {
+    display: flex;
+    flex-direction: row;
+}
+#closeButton {
+    justify-content: flex-end;
+}
+#saveDeleteButtons {
+    justify-content: center;
+}
+#cancelQuestion, saveButton {
+   margin: 10px;
+}
