@@ -1,7 +1,3 @@
-/**
- * Created by INNA on 20.03.2017.
- */
-/*model*/
 const backgroundColors = ['chocolate', 'midnightblue', 'darkcyan', 'darkviolet', 'sienna'];
 let quizQuestions = [];
 let collectedQuizQuestions = [];
@@ -33,7 +29,7 @@ function loadDataFromServer() {
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             parseLoadedData(this.responseText);
-            pagePreparetions();
+            pagePreparations();
 
         }};
     xhttp.open("GET", "http://localhost:8080/questions", true);
@@ -63,7 +59,7 @@ function parseLoadedData(data) {
         }
     quizQuestions = tempQuizQuestions;
 }
-function pagePreparetions() {
+function pagePreparations() {
     displayButtons();
     $('#totalQuestions').html(quizQuestions.length);
     changeCardColor();
@@ -158,7 +154,7 @@ function changeCard() {
     if (questionIndex > 0) {
         returnButton.css('display', 'inline');
     } else {
-        returnButton.css('display', 'none');;
+        returnButton.css('display', 'none');
     }
     if (questionIndex < quizQuestions.length) {
         renderCard();

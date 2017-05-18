@@ -2,8 +2,6 @@ let questions = [];
 
 loadData();
 
-/*model*/
-/*loads [questions] array of objects*/
 const emptyQuestion = {
     description: '',
     options: []
@@ -59,15 +57,7 @@ function blinkItem() {
     setInterval(blinkItem, 2000);
 }
 function loadData() {
-    /*let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            questions = JSON.parse(this.responseText);
-            loadQuestionsData();
-        }
-    };
-    xhttp.open("GET", "http://localhost:8080/questions", true);
-    xhttp.send();*/
+
         $.ajax({
             url: "http://localhost:8080/questions",
             type: 'GET',
