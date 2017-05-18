@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" data-ng-app="quizApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz App</title>
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app/lib/lodash.js"></script>
+
+    <script src="app/lib/angular.js"></script>
+    <script src="app/lib/angular-route.js"></script>
+
+</head>
+<body>
+<nav class="horizontal-box centered-element">
+    <button class="btn btn-lg"><a href="#/quiz">Go to Quiz</a></button>
+    <button class="btn btn-lg"><a href="#/admin">Go to Admin Panel</a></button>
+</nav>
+<div class="horizontal-box centered-element" data-ng-view></div>
+<script src="app/app.js"></script>
+<script src="app/controllers/controllers.js"></script>
+<script src="app/services/questionsService.js"></script>
+<script src="app/services/answersService.js"></script>
+
+
+</body>
+</html>
