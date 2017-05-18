@@ -6,19 +6,17 @@ const DomHelper = {
     },
     setElementText: function (element, text) {
         document.getElementById(element).innerHTML = text;
-    },
+    }
 };
 
 let allQuestions = [];
 let questionsServer = [];
-/*let questions = [];*/
 let curQuestion = 0;
 let totalResult = 0;
 let numbers = [];
 let variants = [];
 let inputs = [];
 let lines = [];
-
 
 loadData();
 
@@ -44,7 +42,6 @@ function loadData() {
                     if (currQuestion.options[j].isCorrect)
                         currAnswers.push(j);
                 }
-
                 let q = {
                     question: currQuestion.description,
                     choices: currChoices,
@@ -55,34 +52,27 @@ function loadData() {
             }
             allQuestions = resultQuestions;
             initializeData();
-
-
-
-
         }
     };
-
     xhttp.open("GET", "http://localhost:8080/questions", true);
     xhttp.send();
 }
-
-
 function addButtons() {
-
     for (let i = 0; i < allQuestions.length; i++) {
         document.getElementById('questionsNumbers').innerHTML += '<button type="button" class="questionNumber btn btn-info">' + (i+1) + '</button>';
     }
     numbers = document.querySelectorAll('.questionNumber');
 }
+
 function addOptions() {
     document.getElementById('variants').innerHTML = '';
     for (let i = 0; i < allQuestions[curQuestion].choices.length; i++) {
-
         document.getElementById('variants').innerHTML += '<div class="check center-block text-left"><label for="choice'+i+'" class="variant checkbox-inline"><input type="checkbox" name="var" class="radinput" id="choice'+i+'">' + allQuestions[curQuestion].choices[i] + '</label></div>';
         variants.push(allQuestions[curQuestion].choices[i]);
         lines = document.querySelectorAll('.check');
     }
 }
+
 function initializeData() {
     addButtons();
     displayQuestion();
@@ -97,6 +87,7 @@ function initializeData() {
     document.getElementById('return').onclick = processClick;
     numbers.forEach(key => key.addEventListener('click', processClick))
 }
+
 function processClick(e) {
   saveAnswers();
   changeQuestionNumber(e);
@@ -106,16 +97,18 @@ function processClick(e) {
 function displayQuestion() {
     DomHelper.setElementText('question', allQuestions[curQuestion].question);
 }
+
 function displayVariants() {
     for (let i = 0; i < variants.length; i++) {
         variants[i] = allQuestions[curQuestion].choices[i];
     }
-
 }
+
 function displayColor() {
     let random = Math.floor((Math.random() * 4) + 1);
     document.getElementById('questionCard').style.background = colors[random];
 }
+
 function changeCard () {
     inputs.forEach(key => key.checked = false);
 
@@ -144,17 +137,19 @@ function changeCard () {
         DomHelper.setElementText('button', 'Confirm');
     }
 }
+
 function saveAnswers () {
     inputs = document.querySelectorAll('.radinput');
-  let indexesOfReceivedForSingleQuestion = [];
-  for (let i = 0; i < inputs.length; i++) {
+    let indexesOfReceivedForSingleQuestion = [];
+    for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].checked) {
       indexesOfReceivedForSingleQuestion.push(i);
     }
-  }
-  indexesOfReceivedForAll[curQuestion] = indexesOfReceivedForSingleQuestion;
-  return indexesOfReceivedForAll;
+    }
+    indexesOfReceivedForAll[curQuestion] = indexesOfReceivedForSingleQuestion;
+    return indexesOfReceivedForAll;
 }
+
 function hideQuestion() {
     document.querySelectorAll('.variants').forEach(DomHelper.hideFromDom);
     inputs.forEach(DomHelper.hideFromDom);
@@ -164,6 +159,7 @@ function hideQuestion() {
     lines.forEach(DomHelper.hideFromDom);
     numbers.forEach(DomHelper.hideFromDom);
 }
+
 function countResults () {
 
   for (let i = 0; i < allQuestions.length; i++) {
@@ -182,9 +178,11 @@ function countResults () {
   }
   return totalResult;
 }
+
 function showResults() {
     DomHelper.setElementText('question', "You've answered " + totalResult + " questions correctly");
 }
+
 function changeQuestionNumber(e) {
     if (e.target.id === 'button')     {
         curQuestion++;
@@ -198,7 +196,7 @@ function changeQuestionNumber(e) {
 /**
  * Admin Panel
  */
-/*model*/
+
 const emptyQuestion = {
     description: '',
     options: []
@@ -262,23 +260,26 @@ function renderQuestions() {
         });
     }
 }
+
 function deleteQuestion(i) {
     deleteQuestionServer(questions[i].id);
     questions.splice(i, 1);
     renderQuestions();
     hideQuestionInfo();
 }
+
 function deleteQuestionServer(id) {
     let xhttp = new XMLHttpRequest();
     let addressToDelete = "http://localhost:8080/questions/" + id;
     xhttp.open("DELETE", addressToDelete, true);
     xhttp.send();
 }
+
 function saveQuestion(question) {
     postQuestionServer(question);
     hideQuestionInfo();
-
 }
+
 function postQuestionServer(objToPost) {
     let myJSON = JSON.stringify(objToPost);
     let xhttp = new XMLHttpRequest();
@@ -300,6 +301,7 @@ function saveAndAddId(question, id) {
     questions[questions.length-1].id = id;
     renderQuestions();
 }
+
 function putQuestionServer(id, objToChange) {
     let addressToChange = "http://localhost:8080/questions/" + id;
     let myJSON = JSON.stringify(objToChange);
@@ -308,10 +310,12 @@ function putQuestionServer(id, objToChange) {
     xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send(myJSON);
 }
+
 function hideQuestionInfo() {
     rightBoxView.style.visibility = 'hidden';
     hideButtons();
 }
+
 function hideButtons() {
     saveButton.style.visibility = 'hidden';
     updateQuestionInfoButton.style.visibility = 'hidden';
@@ -342,15 +346,15 @@ function renderQuestionBox(question) {
         renderQuestions();
         hideQuestionInfo();
     });
-
-
 }
+
 function displayQuestionDetails(index) {
     saveButton.style.visibility = 'hidden';
     updateQuestionInfoButton.style.visibility = 'visible';
     currentQuestionIndex = index;
     renderQuestionBox(questions[index]);
 }
+
 function updateQuestionDescription(e, question) {
     question.description = e.target.value;
     return question;
@@ -402,16 +406,20 @@ function createNewOption(question){
     question.options.push(JSON.parse(JSON.stringify(emptyOption)));
     renderOptions(question);
 }
+
 function updateOptionDescription(i, e, question) {
     question.options[i].description = e.target.value;
 }
+
 function updateOptionIsCorrect(i, e, question) {
     question.options[i].isCorrect = e.target.checked;
 }
+
 function deleteOption(i, question) {
     question.options.splice(i, 1);
     renderOptions(question);
 }
+
 function cancelChanges() {
     renderQuestions();
     hideQuestionInfo();

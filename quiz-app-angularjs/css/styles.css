@@ -1,0 +1,75 @@
+html {box-sizing: border-box; background:whitesmoke;}
+*, *:before, *:after {box-sizing: inherit;}
+body {background-color:blanchedalmond;font-family: 'Titillium Web', sans-serif;font-size: 20px;font-weight: 400;}
+main {width: 80%;}
+.vertical-box {display: flex;flex-direction: column;}
+.horizontal-box {display: flex;flex-direction: row;}
+.centered-element {margin: auto; justify-content: center}
+.righted-element {justify-content: flex-end}
+.divider {
+    margin: 0 0 20px 0;
+    height: 10px;
+    border-bottom: 1px solid gainsboro;
+}
+
+div, img {
+    margin: 10px;
+}
+.no-margin, .row {margin: 0}
+
+i {
+    color: palevioletred;
+}
+a {
+    color: white;
+}
+button i {
+    color: white;
+}
+ul {
+    -webkit-padding-start: 0px;
+}
+ul > li {
+    list-style-type: none;
+}
+button {
+    padding: 10px;
+    margin: 5px;
+    background-color: palevioletred;
+    border: none;
+    color: white;
+    font-size: 16px;
+}
+.input-field {
+    padding: 5px 10px;
+    font-size: 16px;
+    width: 100%;
+}
+label {
+    margin: 5px;
+}
+
+.box {
+    background-color: aliceblue;
+    margin: 10px;
+    /*max-width: 50%;*/
+    padding: 10px;
+}
+table th, td {
+    padding: 10px;
+}
+table {
+    width: 100%;
+}
+.active {
+    background-color: gainsboro;
+}
+
+.quiz-box {
+    background-color: aliceblue;
+    margin: 10px;
+    padding: 10px;
+}
+.baseline {
+    align-items: baseline;
+}

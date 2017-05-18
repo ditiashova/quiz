@@ -1,0 +1,60 @@
+<div class="horizontal-box">
+<section id="questions" class="box vertical-box" >
+    Here we have a table of all questions. You can edit|delete existing questions or add new one.
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Question</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        <tr ng-repeat="question in questions track by $index" ng-class="{'active':isSelectedQuestion($index)}">
+            <td>{{$index + 1}}</td>
+            <td>{{question.description}}</td>
+            <td><a href="" ng-click="editQuestion($index)"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+            <td><a href="" ng-click="deleteQuestion($index)"><i class="fa fa-minus" aria-hidden="true"></i></a></td>
+        </tr>
+    </table>
+    <button type="button" ng-click="createQuestion()"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+</section>
+
+<form id="question-details" class="box vertical-box" data-ng-show="showDetails">
+    <div class="vertical-box">
+        <div class="horizontal-box righted-element">
+            <div class="no-margin"><a href="" ng-click="closeQuestion()"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+        </div>
+        <form class="horizontal-box">
+            <div class="vertical-box">
+                <fieldset>
+                    <input type="text" ng-model="tempQuestion.description" placeholder="{{tempQuestion.description}}" class="input-field">
+                </fieldset>
+
+                <table>
+                    <tr>
+                        <th>#</th>
+                        <th>Option</th>
+                        <th>Correct</th>
+                        <th>Delete</th>
+                    </tr>
+                    <tr ng-repeat="option in tempQuestion.options track by $index" ng-model="option">
+                        <td>{{$index + 1}}</td>
+                        <td><input  type="text"  value="{{option.description}}" ng-model="option.description" class="input-field"> </td>
+                        <td><input type="checkbox"  ng-model="option.isCorrect" {{isOptionChecked($index)}}></td>
+                        <td><a href="" ng-click="deleteOption($index)"><i class="fa fa-minus" aria-hidden="true"></i></a></td>
+                    </tr>
+
+                </table>
+                <button type="button" ng-click="createOption()"><i class="fa fa-plus" aria-hidden="true"></i> Add option</button>
+
+                <div class="horizontal-box centered-element">
+                    <button type="submit" data-ng-show="allowToSave"  ng-click="saveNewQuestion()" ><i class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
+                    <button type="button" data-ng-show="allowToUpdate" ng-click="updateQuestion()"><i class="fa fa-share" aria-hidden="true"></i> Update</button>
+                    <button type="button" data-ng-click="clearAll()"><i class="fa fa-times" aria-hidden="true"></i> Clear all</button>
+                    <button type="button" data-ng-click="closeQuestion()"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</form>
+</div>
