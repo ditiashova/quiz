@@ -1,5 +1,5 @@
 <div class="horizontal-box">
-<section id="questions" class="box vertical-box" >
+<section id="questions" class="box vertical-box row" >
     Here we have a table of all questions. You can edit|delete existing questions or add new one.
     <table>
         <tr>
@@ -21,7 +21,9 @@
 <form id="question-details" class="box vertical-box" data-ng-show="showDetails">
     <div class="vertical-box">
         <div class="horizontal-box righted-element">
-            <div class="no-margin"><a href="" ng-click="closeQuestion()"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+            <div class="no-margin">
+                <a href="" ng-click="closeQuestion()"><i class="fa fa-times" aria-hidden="true"></i></a>
+            </div>
         </div>
         <form class="horizontal-box">
             <div class="vertical-box">

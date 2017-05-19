@@ -52,7 +52,6 @@ label {
 .box {
     background-color: aliceblue;
     margin: 10px;
-    /*max-width: 50%;*/
     padding: 10px;
 }
 table th, td {
@@ -72,4 +71,14 @@ table {
 }
 .baseline {
     align-items: baseline;
+}
+#question-box {
+    margin-left: 25%;
+    max-width: 50%;
+}
+label {
+    background-color: blanchedalmond;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
 }

@@ -1,6 +1,6 @@
 <main class="container">
-    <div class="box" ng-show="questionBox" id="question-box">
-        <div class="horizontal-box">
+    <div class="box vertical-box" ng-show="questionBox" id="question-box">
+        <div class="horizontal-box box">
             <button class="btn" ng-repeat="questions in questions" ng-click="changeQuestion($index)">{{$index+1}}</button>
         </div>
         <div class="horizontal-box">
@@ -10,7 +10,8 @@
             <p>{{questions[currentQuestionId].description}}</p>
         </div>
         <div>
-            <div class="horizontal-box baseline"  ng-repeat="option in questions[currentQuestionId].options track by $index">
+            <div class="horizontal-box baseline"
+                 ng-repeat="option in questions[currentQuestionId].options track by $index">
                 <label><input  type="checkbox"
                                id="checkbox{{$index}}" class="input-checkbox"
                                ng-model="currentAnswers[$index]">
@@ -18,8 +19,6 @@
                 </label>
             </div>
         </div>
-
-
         <div class="horizontal-box">
             <button type="button" ng-show="allowPrevious()"
                     ng-click="goBack()">
