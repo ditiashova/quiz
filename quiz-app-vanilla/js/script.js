@@ -83,9 +83,9 @@ function initializeData() {
     DomHelper.setElementText('totalQuestions', allQuestions.length);
     DomHelper.hideFromDom(document.getElementById('return'));
 
-    document.getElementById('button').onclick = processClick;
+    document.getElementById('confirm').onclick = processClick;
     document.getElementById('return').onclick = processClick;
-    numbers.forEach(key => key.addEventListener('click', processClick))
+    numbers.forEach(key => key.addEventListener('click', processClick));
 }
 
 function processClick(e) {
@@ -120,21 +120,19 @@ function changeCard () {
     }
 
     if (curQuestion < allQuestions.length) {
-
         DomHelper.setElementText('currentQuestion', curQuestion + 1);
         displayQuestion();
         displayVariants();
         addOptions();
-
     } else {
         hideQuestion();
         countResults();
         showResults();
     }
     if (curQuestion === allQuestions.length-1) {
-        DomHelper.setElementText('button', 'Results');
+        DomHelper.setElementText('confirm', 'Results');
     } else {
-        DomHelper.setElementText('button', 'Confirm');
+        DomHelper.setElementText('confirm', 'Confirm');
     }
 }
 
@@ -142,9 +140,9 @@ function saveAnswers () {
     inputs = document.querySelectorAll('.radinput');
     let indexesOfReceivedForSingleQuestion = [];
     for (let i = 0; i < inputs.length; i++) {
-    if (inputs[i].checked) {
-      indexesOfReceivedForSingleQuestion.push(i);
-    }
+        if (inputs[i].checked) {
+          indexesOfReceivedForSingleQuestion.push(i);
+        }
     }
     indexesOfReceivedForAll[curQuestion] = indexesOfReceivedForSingleQuestion;
     return indexesOfReceivedForAll;
@@ -154,7 +152,7 @@ function hideQuestion() {
     document.querySelectorAll('.variants').forEach(DomHelper.hideFromDom);
     inputs.forEach(DomHelper.hideFromDom);
     DomHelper.hideFromDom(document.getElementById('questionNumeration'));
-    DomHelper.hideFromDom(document.getElementById('button'));
+    DomHelper.hideFromDom(document.getElementById('confirm'));
     DomHelper.hideFromDom(document.getElementById('return'));
     lines.forEach(DomHelper.hideFromDom);
     numbers.forEach(DomHelper.hideFromDom);
@@ -164,7 +162,6 @@ function countResults () {
 
   for (let i = 0; i < allQuestions.length; i++) {
       let correctInOneQuestion = 0;
-
       if (indexesOfReceivedForAll[i] && indexesOfReceivedForAll[i].length === allQuestions[i].correctAnswer.length) {
         for (let j = 0; j < indexesOfReceivedForAll[i].length; j++) {
             if (indexesOfReceivedForAll[i][j] === allQuestions[i].correctAnswer[j]) {
@@ -172,7 +169,7 @@ function countResults () {
             }
         }
       }
-      if (correctInOneQuestion === allQuestions[i].correctAnswer.length) {
+      if (correctInOneQuestion > 0 && correctInOneQuestion === allQuestions[i].correctAnswer.length) {
           totalResult++;
       }
   }
@@ -184,7 +181,7 @@ function showResults() {
 }
 
 function changeQuestionNumber(e) {
-    if (e.target.id === 'button')     {
+    if (e.target.id === 'confirm')     {
         curQuestion++;
     } else if (e.target.id === 'return') {
         curQuestion--;
@@ -233,11 +230,11 @@ function createEmptyQuestion() {
 
 function renderQuestions() {
     questionsView.innerHTML = '';
-    for (let i = 0; i < questions.length; i++) {
+    for (let i = 0; i < allQuestions.length; i++) {
         questionsView.innerHTML +=
             `<tr >\
                 <td>${i + 1}</td> \
-                <td class="newQuestion">${questions[i].description}</td>\
+                <td class="newQuestion">${allQuestions[i].description}</td>\
                 <td><img src="http://www.iconsdb.com/icons/download/red/minus-4-512.gif" alt="minus sign" height="20px" width="20px" class="minus-question"></td>\
             </tr>`;
     }

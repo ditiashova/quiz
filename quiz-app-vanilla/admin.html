@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin panel</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles-admin.css">
+    <link rel="icon" type="image/png" href="http://www.clker.com/cliparts/3/V/U/m/W/U/admin-button-icon-md.png">
+    <script src="js/script.js"></script>
+</head>
+<body>
+<header class="row text-center">
+    <h1>
+        Admin panel
+    </h1>
+</header>
+<main class="container-fluid">
+    <section class="row">
+        <div class="box col-sm-12 col-md-8 adminEdit" id="listOfQuestions">
+            <div id="left">
+                <p>
+                    Here you can add and delete questions you have for the quiz. To delete any question press "minus" button. To add new question press "Add" button. To edit the question press on it.
+                </p>
+                <table class="table mytable">
+                    <tr>
+                        <th>#</th>
+                        <th>Question text</th>
+                        <th>Delete</th>
+                    </tr>
+                </table>
+                <table id="tableOfQuestions">
+
+                </table>
+                <p>Press "Add" button to add another question</p>
+                <button type="submit" class="addButton btn btn-primary" id="addQuestionButton"><img src="http://www.iconarchive.com/download/i76011/martz90/circle-addon1/text-plus.ico" alt="check sign" height="14px" width="14px">
+                    Add question
+                </button>
+                </div>
+
+            </div>
+        </div>
+        <div class="box col-sm-12 col-md-4 adminEdit" id="settingsForQuestions" >
+            <div id="right">
+            <div id="editQuestion">
+                <div id="closeButton" class="pull-right">
+                    <button type="button" class="addButton btn btn-danger" id="closeQuestionInfo">х</button>
+                </div>
+                <p>
+                <h3>Description</h3>
+                Edit the question description in the input below
+                </p>
+                <input type="text" name="questionText" value="Question text..." id="adminQuestionInput">
+                <p>
+                    Add or delete possible answers to the question. Mark correct as checked (from none to all).
+                </p>
+            </div>
+                <table class="table mytable">
+                    <tr>
+                        <th>#</th>
+                        <th>Variant text</th>
+                        <th>Correct</th>
+                        <th>Delete</th>
+                    </tr>
+                </table>
+                <table id="tableOfOptions"></table>
+                <p>
+                    Press "Add" button to add another option
+                </p>
+                <div class="text-center" id="button-div">
+                    <button type="submit" class="addButton btn btn-primary" id="addOptionButton"><img src="http://www.iconarchive.com/download/i76011/martz90/circle-addon1/text-plus.ico" alt="check sign" height="14px" width="14px">
+                        Add
+                    </button>
+                </div>
+                <p>
+                    Press "Save" button to save question
+                </p>
+                <div id="saveDeleteButtons">
+                    <button type="button" class="addButton btn btn-danger" id="cancelQuestion">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="addButton btn btn-primary" id="saveButton"><img src="http://www.iconarchive.com/download/i76011/martz90/circle-addon1/text-plus.ico" alt="check sign" height="14px" width="14px">
+                        Save
+                    </button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+    </section>
+</main>
+
+</body>
+</html>

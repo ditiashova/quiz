@@ -1,6 +1,5 @@
 const backgroundColors = ['chocolate', 'midnightblue', 'darkcyan', 'darkviolet', 'sienna'];
 let quizQuestions = [];
-let collectedQuizQuestions = [];
 let options = [];
 let checked = 0;
 let inputs = [];
@@ -24,17 +23,16 @@ returnButton.on('click', processClick);
 
 /*functions*/
 function loadDataFromServer() {
-    /*let xhttp = new XMLHttpRequest();*/
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             parseLoadedData(this.responseText);
             pagePreparations();
-
         }};
     xhttp.open("GET", "http://localhost:8080/questions", true);
     xhttp.send();
 }
+
 function parseLoadedData(data) {
     let receivedQuestions = JSON.parse(data);
     let arrayLength = receivedQuestions.length;
@@ -59,6 +57,7 @@ function parseLoadedData(data) {
         }
     quizQuestions = tempQuizQuestions;
 }
+
 function pagePreparations() {
     displayButtons();
     $('#totalQuestions').html(quizQuestions.length);
@@ -76,12 +75,12 @@ function changeCardColor() {
     let randomColor = Math.floor((Math.random() * 4) + 1);
     $('#questionCard').css('backgroundColor', backgroundColors[randomColor]);
 }
+
 function displayData() {
     $("#question").html(quizQuestions[questionIndex].question);
     displayOptions();
-
-
 }
+
 function displayOptions() {
     options = quizQuestions[questionIndex].choices;
     let optionsCounter = options.length;
@@ -91,6 +90,7 @@ function displayOptions() {
     }
     lines = $('.check');
 }
+
 function displayButtons() {
     let buttonCounter = quizQuestions.length;
     for (let i = 0; i < buttonCounter; i++) {
@@ -101,6 +101,7 @@ function displayButtons() {
     buttonNumbers.each(function() {
         $(this).on('click', processClick)});
 }
+
 function displayBottomButtons() {
     if (questionIndex === 0) {
         returnButton.css('display', 'none');
@@ -113,11 +114,13 @@ function displayBottomButtons() {
         confirmButton.html('Confirm');
     }
 }
+
 function processClick(e) {
     saveAnswer();
     changeQuestionNumber(e);
     changeCard();
 }
+
 function changeQuestionNumber(e) {
     if (e.target.id === 'button')     {
         questionIndex++;
@@ -127,6 +130,7 @@ function changeQuestionNumber(e) {
         questionIndex = +e.target.innerHTML-1;
     }
 }
+
 function saveAnswer() {
     inputs = $('.radinput');
     let indexesOfReceivedForSingleQuestion = [];
@@ -148,6 +152,7 @@ function saveAnswer() {
     indexesOfReceivedForAll[questionIndex] = indexesOfReceivedForSingleQuestion;
     return indexesOfReceivedForAll;
 }
+
 function changeCard() {
     inputs.each(key => key.checked = false);
     changeCardColor();
@@ -165,6 +170,7 @@ function changeCard() {
         showResults();
     }
 }
+
 function hideQuestion() {
     $('.variants').each(el => el.css('display', 'none'));
     inputs.each(function() {
@@ -180,6 +186,7 @@ function hideQuestion() {
         $(this).css('display', 'none')
     });
 }
+
 function countResults() {
     for (let i = 0; i < quizQuestions.length; i++) {
         let correctInOneQuestion = 0;
@@ -196,6 +203,7 @@ function countResults() {
     }
     return totalResult;
 }
+
 function showResults() {
     $('#question').html("You've answered " + totalResult + " questions correctly");
 }
@@ -209,3 +217,4 @@ function displayChecked() {
         }
     }
 }
+;

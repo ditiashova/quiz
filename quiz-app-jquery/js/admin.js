@@ -48,16 +48,18 @@ function displayPopUpWindow() {
     $(confirmationWindow).fadeIn('slow');
     setInterval(blinkItem, 600);
 }
+
 function hidePopUpWindow() {
     $('#confirmationWindow').fadeOut('slow');
 }
+
 function blinkItem() {
     $(confirmChangesButton[0]).fadeOut(1000);
     $(confirmChangesButton[0]).fadeIn(1000);
     setInterval(blinkItem, 2000);
 }
-function loadData() {
 
+function loadData() {
         $.ajax({
             url: "http://localhost:8080/questions",
             type: 'GET',
@@ -66,12 +68,13 @@ function loadData() {
                 loadQuestionsData();
             }
         })
-
 }
+
 function loadQuestionsData() {
     renderQuestionsList();
     manageQuestionsList();
 }
+
 function renderQuestionsList() {
     questionsList.html('');
     questionsTotal = questions.length;
@@ -82,9 +85,9 @@ function renderQuestionsList() {
             questionsDescription: questions[i].description
         };
         questionsList.append(tableLine(tableData));
-
     }
 }
+
 function manageQuestionsList() {
     const questionDescriptions = $('.newQuestion');
     const minusSigns = $('.minus-question');
@@ -97,6 +100,7 @@ function manageQuestionsList() {
         } )
     }
 }
+
 function manageQuestion(row, i) {
     if (row.style.backgroundColor !== 'aquamarine') {
         Array.from($(".newQuestion")).forEach(function(el) {
@@ -111,43 +115,51 @@ function manageQuestion(row, i) {
         $(row).css('backgroundColor', 'white');
     }
 }
+
 function clearTempQuestion() {
     tempQuestion = JSON.parse(JSON.stringify(emptyQuestion));
     optionsTotal = 0;
 }
+
 function hideQuestionInfo() {
     clearTempQuestion();
     questionInfo.css('visibility', 'hidden');
 }
+
 function addNewQuestion() {
     clearTempQuestion();
     serverRequest = 'post';
     displayQuestionInfo();
 }
+
 function displayQuestionInfo() {
     $(questionInfo).css('visibility', 'visible');
     manageCurrentQuestion(tempQuestion);
 }
+
 function manageCurrentQuestion(currentQuestion) {
     const currentQuestionDescription = $('#adminQuestionInput')[0];
     $(currentQuestionDescription).val(currentQuestion.description);
     manageCurrentQuestionDescription(currentQuestionDescription);
     manageCurrentQuestionOptions();
 }
+
 function manageCurrentQuestionDescription(descriptionInput) {
     $(descriptionInput).on('keyup', function (e) {
         tempQuestion.description = e.target.value;
         return tempQuestion;
     })
 }
+
 function manageCurrentQuestionOptions() {
     renderOptionsList();
-
 }
+
 function addNewOption() {
     tempQuestion.options.push(JSON.parse(JSON.stringify(emptyOption)));
     manageCurrentQuestionOptions();
 }
+
 function renderOptionsList() {
     $(optionsList).html('');
     optionsTotal = tempQuestion.options.length;
@@ -177,11 +189,9 @@ function renderOptionsList() {
             renderOptionsList();
         });
     }
-
 }
 
 function saveCurrentQuestion() {
-
     if (serverRequest === 'post') {
         postQuestionToServer();
     } else if (serverRequest === 'put') {
@@ -190,8 +200,8 @@ function saveCurrentQuestion() {
         loadQuestionsData();
     }
     hideQuestionInfo();
-
 }
+
 function putQuestionToServer() {
     let addressToChange = 'http://localhost:8080/questions/' + tempQuestion.id;
     let myPutJSON = JSON.stringify(tempQuestion);
@@ -202,8 +212,8 @@ function putQuestionToServer() {
         dataType: 'json',
         headers: {'Content-type': 'application/json'}
     });
-
 }
+
 function postQuestionToServer() {
     let myPostJSON = JSON.stringify(tempQuestion);
     $.ajax({
@@ -217,22 +227,25 @@ function postQuestionToServer() {
             loadQuestionsData();
         }
     });
-
 }
+
 function deleteQuestionFromServer(id) {
     let addressToDelete = 'http://localhost:8080/questions/' + id;
     $.ajax({
         url: addressToDelete,
         type: 'DELETE',
     });
-
 }
+
 function deleteQuestion(i) {
     deleteQuestionFromServer(questions[i].id);
     questions.splice(i, 1);
     loadQuestionsData();
 }
+
 function cancelCurrentQuestion() {
     hideQuestionInfo();
     loadQuestionsData();
 }
+
+;

@@ -10,6 +10,21 @@ body {
     flex-direction: column;
     align-items: center;
 }
+label {
+    background-color: white;
+    border-radius: 5px;
+}
+button {
+    background-color: whitesmoke;
+    border: none;
+    margin: 15px;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+input {
+    margin: 10px;
+
+}
 #variants {
     width: 80%;
 }
@@ -19,14 +34,12 @@ body {
     align-items: flex-start;
     width: 100%;
     color: black;
-
     margin-bottom: 10px;
     border-radius: 5px;
 }
 .circle, .line {
     padding: 10px;
     background-color: white;
-
 }
 .circle {
     flex: 1;
@@ -46,14 +59,11 @@ body {
 }
 #questionCard, #result {
     width: 400px;
-    color:ghostwhite;
+    color: ghostwhite;
     border-radius: 10px;
 }
 #buttons {
     display: inline;
-}
-#button {
-    margin-top: 15px;
 }
 #question {
     text-align: center;

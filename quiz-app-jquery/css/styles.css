@@ -87,11 +87,9 @@ body {
 
 #buttons {
     display: inline;
-}
-
-#button {
     margin-top: 15px;
 }
+
 
 #question {
     text-align: center;
